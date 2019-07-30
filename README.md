@@ -1,2 +1,2 @@
-# django-tutorial
-code created during the django tutorial lectures
+# README
+This code was created during the django tutorial lectures.
