@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/home/rodrigo/.local/opt/miniconda3/envs/django-tut/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
+}
