@@ -1,0 +1,236 @@
+[tool.poetry]
+name = "mysite"
+version = "0.1.0"
+description = "Source code created during the lectures of application stated on readme file."
+authors = ["Rodrigo Estevao Rodrigues <rodrigoestevao@yahoo.com>"]
+readme = "README.md"
+packages = []
+
+# poetry add --no-cache djangorestframework markdown django-filter
+# poetry add --no-cache --group dev pre-commit ruff ipython ipykernel mypy httpx
+# poetry add --no-cache --group test pytest faker
+
+
+[tool.poetry.dependencies]
+python = "^3.12.3"
+django = "^5.0.6"
+psycopg = {extras = ["binary"], version = "^3.1.19"}
+markdown = "^3.6"
+django-filter = "^24.2"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.10.0"
+ruff = "^0.4.8"
+pre-commit = "^3.7.1"
+ipykernel = "^6.29.4"
+django-stubs = "^5.0.2"
+django-extensions = "^3.2.3"
+
+[tool.poetry.group.test.dependencies]
+faker = "^25.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+mypy_path = "./mysite"
+plugins = ["mypy_django_plugin.main"]
+strict = false
+
+[tool.django-stubs]
+django_settings_module = "mysite.settings"
+
+# [[tool.mypy.overrides]]
+# module = "*.module"
+# warn_unused_ignores = false
+# ignore_missing_imports = true
+
+# [[tool.mypy.overrides]]
+# module = "app.concurrency"
+# warn_unused_ignores = false
+# ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.ruff]
+fix = true
+ignore-init-module-imports = true
+respect-gitignore = true
+show-source = true
+target-version = "py312"
+
+
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+
+extend-select = [
+#     "B",   # flake8-bugbear
+#     "C4",  # flake8-comprehensions
+#     "ERA", # flake8-eradicate/eradicate
+#     "I",   # isort
+#     "N",   # pep8-naming
+#     "PIE", # flake8-pie
+#     "PGH", # pygrep
+#     "RUF", # ruff checks
+#     "SIM", # flake8-simplify
+#     "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+]
+
+ignore = [
+    "E501",   # line too long, handled by black
+    "B008",   # do not perform function calls in argument defaults
+    "B904",   # use 'raise ... from err'
+    "B905",   # use explicit 'strict=' parameter with 'zip()'
+    "N813",   # Camelcase imported as lowercase: e.g. HTTPStatus as `status`
+    "N818",   # Exception name should be named with an Error suffix
+    "PGH003", # Use specific rule codes when ignoring type issues
+    "TCH002", # Move import {qualified_name} out of type-checking block.
+    "TCH003", # Move import {qualified_name} out of type-checking block.
+    "TCH004", # Move import {qualified_name} out of type-checking block.
+]
+
+extend-include = ["**/*.ipynb"]
+
+extend-exclude = [
+  "__pycache__",
+  ".git-rewrite",
+  "docker",
+  "docs/*",
+  "__init__.py",
+  "get-poetry.py",
+  "install-poetry.py",
+  "env.py",
+  "setup.py",
+  "package.py",
+  "migrations",
+  "resources",
+  "tests",
+  "tests/conftest.py",
+  "tests/**/conftest.py",
+  "tests/fixtures.py",
+  "tests/**/fixtures.py",
+  "tests/fixtures/*",
+  "tests/**/fixtures/*",
+  "alembic/*"
+]
+force-exclude = true
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+unfixable = [
+    "ERA",    # do not autoremove commented out code
+]
+
+# Same as Black.
+line-length = 79
+indent-width = 4
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402", "ANN201"]
+
+
+[tool.ruff.isort]
+split-on-trailing-comma = true
+force-sort-within-sections = true
+order-by-type = true
+combine-as-imports = false
+force-single-line = true
+lines-between-types = 1
+lines-after-imports = 2
+known-local-folder = ["mysite"]
+known-third-party = ["django", "pytest", "rest_framework"]
+
+
+[tool.ruff.format]
+# The following conventions are the same adpted by black
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
+[tool.ruff.flake8-import-conventions]
+[tool.ruff.flake8-import-conventions.aliases]
+altair = "alt"
+matplotlib = "mpl"
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+pandas = "pd"
+seaborn = "sns"
+tensorflow = "tf"
+holoviews = "hv"
+panel = "pn"
+"plotly.express" = "px"
+polars = "pl"
+pyarrow = "pa"
+scipy = "sp"
+
+[tool.pytest.ini_options]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+  "--ignore=docs_src",
+  "-p no:cacheprovider",
+  "-p no:tornado",
+]
+pythonpath = ["mysite"]
+testpaths = ["tests"]
+norecursedirs = [".venv", ".git"]
+xfail_strict = true
+junit_family = "xunit2"
+# filterwarnings = [
+#     "error",
+#     # TODO: needed by asyncio in Python 3.9.7 https://bugs.python.org/issue45097, try to remove on 3.9.8
+#     'ignore:The loop argument is deprecated since Python 3\.8, and scheduled for removal in Python 3\.10:DeprecationWarning:asyncio',
+#     'ignore:starlette.middleware.wsgi is deprecated and will be removed in a future release\..*:DeprecationWarning:starlette',
+#     # TODO: remove after upgrading HTTPX to a version newer than 0.23.0
+#     # Including PR: https://github.com/encode/httpx/pull/2309
+#     "ignore:'cgi' is deprecated:DeprecationWarning",
+#     # For passlib
+#     "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
+#     # see https://trio.readthedocs.io/en/stable/history.html#trio-0-22-0-2022-09-28
+#     "ignore:You seem to already have a custom.*:RuntimeWarning:trio",
+#     # TODO remove pytest-cov
+#     'ignore::pytest.PytestDeprecationWarning:pytest_cov',
+# ]
+# asyncio_mode = "auto"
+
+[tool.coverage.report]
+parallel = true
+source = [
+    "docs_src",
+    "tests",
+    "mysite",
+]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:"
+]

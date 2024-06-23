@@ -1,0 +1,106 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_SERVER=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./contrib/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./contrib/postgres/postgresql.conf:/etc/postgresql.conf
+      - db:/var/lib/postgresql/data
+    networks:
+      - net
+    command: >
+      -p ${DB_PORT}
+    healthcheck:
+      test: [
+        "CMD",
+        "pg_isready",
+        "-h", "${DB_HOST}",
+        "-p", "${DB_PORT}",
+        "-U", "${DB_USER}",
+        "-d", "${DB_NAME}",
+        "-q"
+      ]
+      timeout: 30s
+      interval: 5s
+      retries: 10
+
+  testdb:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_USER=${TESTDB_USER}
+      - POSTGRES_PASSWORD=${TESTDB_PASS}
+      - POSTGRES_SERVER=${TESTDB_HOST}
+      - POSTGRES_PORT=${TESTDB_PORT}
+      - POSTGRES_DB=${TESTDB_NAME}
+    ports:
+      - ${TESTDB_PORT}:${TESTDB_PORT}
+    volumes:
+      - ./contrib/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./contrib/postgres/postgresql.conf:/etc/postgresql.conf
+      - testdb:/var/lib/postgresql/data
+    networks:
+      - net
+    command: >
+      -p ${TESTDB_PORT}
+    healthcheck:
+      test: [
+        "CMD",
+        "pg_isready",
+        "-h", "${TESTDB_HOST}",
+        "-p", "${TESTDB_PORT}",
+        "-U", "${TESTDB_USER}",
+        "-d", "${TESTDB_NAME}",
+        "-q"
+      ]
+      timeout: 30s
+      interval: 5s
+      retries: 10
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    env_file:
+      - ./.env
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - ./mysite/mysite/:/opt/mysite/
+    networks:
+      - net
+    command: >
+      tail -f /dev/null
+    # command: >
+    #   sh -c "python manage.py wait_for_db &&
+    #          python manage.py makemigrations &&
+    #          python manage.py migrate &&
+    #          python manage runserver 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      testdb:
+        condition: service_healthy
+
+volumes:
+  db:
+  testdb:
+
+networks:
+  net:

@@ -1,0 +1,87 @@
+# Basic .gitattributes for a this repo.
+
+# Source files (These files are text and should be normalized [crlf => lf])
+# ============
+*.pxd    text diff=python
+*.py     text diff=python
+*.py3    text diff=python
+*.pyw    text diff=python
+*.pyx    text diff=python
+*.pyz    text diff=python
+*.sh     text diff=bash
+*.php    text diff=php
+*.css    text diff=css
+*.js     text
+*.ts     text
+*.htm    text diff=html
+*.html   text diff=html
+*.xhtml  text diff=html
+*.xml    text
+*.ipynb  text diff=python
+
+
+# Other text files (should be normalized [crlf => lf])
+*.conf    text
+*.txt     text
+*.ini     text
+*.yml     text
+*.yaml    text
+*.json    text
+*.inc     text
+.htaccess text
+
+
+# Binary files
+# ============
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.db      binary
+*.p       binary
+*.pkl     binary
+*.parq    binary
+*.parquet binary
+*.pickle  binary
+*.pyc     binary
+*.pyd     binary
+*.pyo     binary
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.mov     binary
+*.mp4     binary
+*.mp3     binary
+*.flv     binary
+*.fla     binary
+*.swf     binary
+*.gz      binary
+*.zip     binary
+*.7z      binary
+*.ttf     binary
+
+
+# Auto detect text files and perform LF normalization
+# http://davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/
+* text=auto
+
+
+# Documents
+*.md   diff=markdown
+*.MD   diff=markdown
+*.tex  diff=tex
+*.TEX  diff=tex
+*.doc  diff=astextplain
+*.DOC  diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.xls  diff=astextplain
+*.XLS  diff=astextplain
+*.xlsx diff=astextplain
+*.XLSX diff=astextplain
+*.dot  diff=astextplain
+*.DOT  diff=astextplain
+*.pdf  diff=astextplain
+*.PDF  diff=astextplain
+*.rtf  diff=astextplain
+*.RTF  diff=astextplain
