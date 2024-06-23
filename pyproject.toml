@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Source code created during the lectures of application stated on readme file."
 authors = ["Rodrigo Estevao Rodrigues <rodrigoestevao@yahoo.com>"]
 readme = "README.md"
-packages = []
+packages = [{include = "mysite", from = "mysite"}]
 
 # poetry add --no-cache djangorestframework markdown django-filter
 # poetry add --no-cache --group dev pre-commit ruff ipython ipykernel mypy httpx
@@ -20,7 +20,7 @@ django-filter = "^24.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
-ruff = "^0.4.8"
+ruff = "^0.4.10"
 pre-commit = "^3.7.1"
 ipykernel = "^6.29.4"
 django-stubs = "^5.0.2"
@@ -58,50 +58,9 @@ check_untyped_defs = true
 
 [tool.ruff]
 fix = true
-ignore-init-module-imports = true
 respect-gitignore = true
-show-source = true
+output-format = "full"
 target-version = "py312"
-
-
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "C",   # flake8-comprehensions
-    "B",   # flake8-bugbear
-    "UP",  # pyupgrade
-]
-
-extend-select = [
-#     "B",   # flake8-bugbear
-#     "C4",  # flake8-comprehensions
-#     "ERA", # flake8-eradicate/eradicate
-#     "I",   # isort
-#     "N",   # pep8-naming
-#     "PIE", # flake8-pie
-#     "PGH", # pygrep
-#     "RUF", # ruff checks
-#     "SIM", # flake8-simplify
-#     "TCH", # flake8-type-checking
-    "TID", # flake8-tidy-imports
-]
-
-ignore = [
-    "E501",   # line too long, handled by black
-    "B008",   # do not perform function calls in argument defaults
-    "B904",   # use 'raise ... from err'
-    "B905",   # use explicit 'strict=' parameter with 'zip()'
-    "N813",   # Camelcase imported as lowercase: e.g. HTTPStatus as `status`
-    "N818",   # Exception name should be named with an Error suffix
-    "PGH003", # Use specific rule codes when ignoring type issues
-    "TCH002", # Move import {qualified_name} out of type-checking block.
-    "TCH003", # Move import {qualified_name} out of type-checking block.
-    "TCH004", # Move import {qualified_name} out of type-checking block.
-]
-
-extend-include = ["**/*.ipynb"]
 
 extend-exclude = [
   "__pycache__",
@@ -127,34 +86,55 @@ extend-exclude = [
 ]
 force-exclude = true
 
-# Allow fix for all enabled rules (when `--fix`) is provided.
-unfixable = [
-    "ERA",    # do not autoremove commented out code
-]
-
 # Same as Black.
 line-length = 79
 indent-width = 4
 
+[too.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+
+extend-select = [
+#     "B",   # flake8-bugbear
+#     "C4",  # flake8-comprehensions
+#     "ERA", # flake8-eradicate/eradicate
+#     "I",   # isort
+#     "N",   # pep8-naming
+#     "PIE", # flake8-pie
+#     "PGH", # pygrep
+#     "RUF", # ruff checks
+#     "SIM", # flake8-simplify
+#     "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+]
+
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
+ignore = [
+    "E501",   # line too long, handled by black
+    "B008",   # do not perform function calls in argument defaults
+    "B904",   # use 'raise ... from err'
+    "B905",   # use explicit 'strict=' parameter with 'zip()'
+    "N813",   # Camelcase imported as lowercase: e.g. HTTPStatus as `status`
+    "N818",   # Exception name should be named with an Error suffix
+    "PGH003", # Use specific rule codes when ignoring type issues
+    "TCH002", # Move import {qualified_name} out of type-checking block.
+    "TCH003", # Move import {qualified_name} out of type-checking block.
+    "TCH004", # Move import {qualified_name} out of type-checking block.
+]
 
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402"]
-"**/{tests,docs,tools}/*" = ["E402", "ANN201"]
-
-
-[tool.ruff.isort]
-split-on-trailing-comma = true
-force-sort-within-sections = true
-order-by-type = true
-combine-as-imports = false
-force-single-line = true
-lines-between-types = 1
-lines-after-imports = 2
-known-local-folder = ["mysite"]
-known-third-party = ["django", "pytest", "rest_framework"]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+unfixable = [
+    "ERA",    # do not autoremove commented out code
+]
 
 
 [tool.ruff.format]
@@ -165,20 +145,36 @@ skip-magic-trailing-comma = false
 line-ending = "lf"
 
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402", "ANN201"]
+
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = true
+force-sort-within-sections = true
+order-by-type = true
+combine-as-imports = false
+force-single-line = true
+lines-after-imports = 2
+known-local-folder = ["mysite"]
+known-third-party = ["django", "pytest", "rest_framework"]
+
+
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
 
-[tool.ruff.flake8-import-conventions]
-[tool.ruff.flake8-import-conventions.aliases]
+[tool.ruff.lint.flake8-import-conventions]
+[tool.ruff.lint.flake8-import-conventions.aliases]
 altair = "alt"
 matplotlib = "mpl"
 "matplotlib.pyplot" = "plt"

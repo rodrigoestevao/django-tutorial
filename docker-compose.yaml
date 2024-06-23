@@ -14,8 +14,6 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     volumes:
-      - ./contrib/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./contrib/postgres/postgresql.conf:/etc/postgresql.conf
       - db:/var/lib/postgresql/data
     networks:
       - net
@@ -49,8 +47,6 @@ services:
     ports:
       - ${TESTDB_PORT}:${TESTDB_PORT}
     volumes:
-      - ./contrib/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./contrib/postgres/postgresql.conf:/etc/postgresql.conf
       - testdb:/var/lib/postgresql/data
     networks:
       - net
@@ -77,16 +73,17 @@ services:
     env_file:
       - ./.env
     build:
-      context: ./src
       dockerfile: Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
     volumes:
-      - ./mysite/mysite/:/opt/mysite/
+      - ./mysite/:/opt/mysite/
     networks:
       - net
     command: >
-      tail -f /dev/null
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     # command: >
     #   sh -c "python manage.py wait_for_db &&
     #          python manage.py makemigrations &&
